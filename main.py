@@ -105,8 +105,23 @@ def world():
                 path.goto(x + 10, y + 10)
                 path.dot(10, 'blue')  # Display a blue dot for power-up tiles
 
+game_over = False  # Variable to track whether the game is over
+
+def game_over_message():
+    
+    """Display game over message."""
+    path.up()
+    path.goto(0, 0)
+    path.color('white')
+    path.write("Game Over", align="center", font=("Arial", 24, "normal"))
+    
 def move():
     """Move pacman and all ghosts."""
+    global game_over  # Use the global game_over variable
+
+    if game_over:
+        return
+        
     writer.undo()
     writer.write(f"Score: {state['score']}  Power-Up: {state['power_up']}", align="center")
 
@@ -167,6 +182,8 @@ def move():
                 state['score'] += 10  # Increase score for eating a ghost
                 play_sound('pacman_death.wav')  # Add your sound file for eating ghosts here
             else:
+                game_over = True
+                game_over_message()  # Display game over message
                 return
 
     ontimer(move, 100)
